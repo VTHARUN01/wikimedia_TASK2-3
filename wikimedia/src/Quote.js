@@ -6,19 +6,24 @@ import {
   ModalHeader,
   ModalBody,
   Button,
+  FormFeedback,
 } from "reactstrap";
 import { useState } from "react";
 export const Quote = (props) => {
   const [Quote, SetQuote] = useState("");
   const [isvalid, SetIsValid] = useState(false);
+  const [errMess, SeterrMess] = useState("");
   const Validator = (Quote) => {
-    let regex = /^[A-Za-z0-9]+$/;
+    let regex = /^[a-zA-Z0-9_ ]*$/;
     if (Quote == "") {
       SetIsValid(false);
+      SeterrMess("Quote can't be an empty string");
     } else if (!regex.test(Quote)) {
       SetIsValid(false);
+      SeterrMess("Enter A Valid Quote");
     } else {
       SetIsValid(true);
+      SeterrMess("");
     }
     // fs.readFile(FILE_LOCATION, function (err, data) {
     //   if (err) throw err;
@@ -41,6 +46,8 @@ export const Quote = (props) => {
           <Form>
             <FormGroup row className="mx-1">
               <Input
+                valid={isvalid}
+                invalid={!isvalid}
                 type="textarea"
                 name="quote"
                 id="quote"
@@ -52,7 +59,9 @@ export const Quote = (props) => {
                 }}
                 placeholder="Give a Suitable Quote"
               />
+              <FormFeedback>{errMess}</FormFeedback>
             </FormGroup>
+
             <Button
               color="success"
               type="Submit"

@@ -90,7 +90,7 @@ export const SourceUpload = (props) => {
             ) : null}
             {props.image ? (
               <FormGroup row>
-                <Label md={3} htmlFor="image">
+                <Label md={5} htmlFor="image">
                   Upload Image
                 </Label>
                 <Input
@@ -109,7 +109,7 @@ export const SourceUpload = (props) => {
             ) : null}
             {props.video ? (
               <FormGroup row>
-                <Label md={3} htmlFor="video">
+                <Label md={5} htmlFor="video">
                   Upload Video/Lecture
                 </Label>
                 <Input
