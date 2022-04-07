@@ -7,6 +7,7 @@ import {
   FormGroup,
   Input,
   Label,
+  FormFeedback,
 } from "reactstrap";
 import { Quote } from "./Quote";
 import { useState } from "react";
@@ -22,7 +23,7 @@ export const SourceUpload = (props) => {
   const [Url, SetUrl] = useState("");
   const [Image, SetImage] = useState({});
   const [Video, SetVideo] = useState({});
-
+  const [isUrlValid, SetUrlValid] = useState(false);
   return (
     <>
       <Modal
@@ -71,21 +72,53 @@ export const SourceUpload = (props) => {
               </FormGroup>
             ) : null}
             {props.web ? (
-              <FormGroup row>
+              <FormGroup row className="mx-1">
                 <Label md={3} htmlFor="url">
                   Pin The Link
                 </Label>
                 <Input
+                  autoComplete="off"
+                  valid={isUrlValid}
+                  invalid={!isUrlValid}
                   id="url"
                   type="url"
                   name="url"
                   onChange={(e) => {
-                    if (e.target.validity.valid) {
-                      SetUrl(e.target.value);
-                      SeterrMess({ ...errMess, Url: "" });
+                    SetUrl(e.target.value);
+                    const domain = new URL(e.target.value);
+                    // domain.protocol //protocol
+                    // domain.hostname //Hostname
+                    // domain.search   //Query String
+                    // domain.pathname //Path
+                    console.log(domain);
+                    if (domain === "") {
+                      SeterrMess({ ...errMess, Url: "Enter URL" });
+                      SetUrlValid(false);
+                    } else if (domain.protocol == "https:") {
+                      if (domain.hostname == "") {
+                        SeterrMess({ ...errMess, Url: "Enter hostname " });
+                        SetUrlValid(false);
+                      } else if (
+                        domain.hostname == "www.google.com" &&
+                        domain.search == ""
+                      ) {
+                        SeterrMess({ ...errMess, Url: "Enter A Valid URL" });
+                        SetUrlValid(false);
+                      } else if (e.target.validity.valid) {
+                        SeterrMess({ ...errMess, Url: "" });
+                        SetUrlValid(true);
+                      }
+                    } else {
+                      SeterrMess({
+                        ...errMess,
+                        Url: "URL doesn't follow protocol (not https)",
+                      });
+
+                      SetUrlValid(false);
                     }
                   }}
                 />
+                <FormFeedback>{errMess.Url}</FormFeedback>
               </FormGroup>
             ) : null}
             {props.image ? (
